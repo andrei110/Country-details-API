@@ -1,10 +1,10 @@
 'use strict';
 
+/////////////////// Variables
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
-// Functions
-
+/////////////////// Functions
 function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
@@ -31,20 +31,44 @@ function renderCountry(data, className = '') {
   countriesContainer.style.opacity = 1;
 }
 
+function getPosition() {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+}
+
 function renderError(msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
   countriesContainer.style.opacity = 1;
 }
 
+// getNeighbours then() method
+/*
 function getNeighbours(urlNeighbour) {
   return fetch(urlNeighbour)
     .then(res => res.json())
     .then(neighbourData => {
       // console.log(neighbourData);
       renderCountry(neighbourData, 'neighbour');
+      return neighbourData;
     });
 }
+*/
 
+// getNeighbours async/await method
+async function getNeighbours(urlNeighbour) {
+  const fetchData = await fetch(urlNeighbour);
+  // console.log(fetchData);
+  if (!fetchData.ok) throw new Error('Problem getting neighbour data');
+  const neighbourData = await fetchData.json();
+  // console.log(neighbourData);
+  renderCountry(neighbourData, 'neighbour');
+  return neighbourData;
+}
+////////////////////////////////////////////////////////////////////////////////
+
+// whereAmI using then() method
+/*
 function whereAmI(lat, lng) {
   fetch(
     `https://us1.api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
@@ -74,7 +98,7 @@ function whereAmI(lat, lng) {
     .catch(err => console.log(`Something went wrong, ${err.message}!!`));
 }
 
-//Update challenge 1 😊
+
 navigator.geolocation.getCurrentPosition(
   function (position) {
     // console.log(position);
@@ -89,3 +113,47 @@ navigator.geolocation.getCurrentPosition(
     alert(`Could not get your position!!`);
   }
 );
+*/
+
+// whereAmI using async/await
+async function whereAmI() {
+  try {
+    // Geolocation
+    const geo = await getPosition();
+    // console.log(geo);
+    const { latitude: lat, longitude: lng } = geo.coords;
+
+    // Reverse Geocoding
+    const revGeo = await fetch(
+      `https://us1.api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+    );
+    if (!revGeo.ok) throw new Error('Problem getting location data');
+    const revGeoData = await revGeo.json();
+    // console.log(revGeoData);
+
+    // Render current location
+    const currLocation = await fetch(
+      `https://restcountries.com/v2/name/${revGeoData.countryName}`
+    );
+    if (!currLocation.ok) throw new Error('Problem getting country data');
+    const [currLocationData] = await currLocation.json();
+    // console.log(currLocationData);
+    renderCountry(currLocationData);
+    const neighbours = await Promise.all(
+      currLocationData.borders.map(neighbour =>
+        getNeighbours(`https://restcountries.com/v2/alpha/${neighbour}`)
+      )
+    );
+    // console.log(neighbours);
+    return neighbours;
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+btn.addEventListener('click', function () {
+  countriesContainer.innerHTML = '';
+  whereAmI();
+});
+
+// whereAmI().then(data => console.log(data));
