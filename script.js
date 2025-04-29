@@ -2,14 +2,17 @@
 
 /////////////////// Variables
 const btn = document.querySelector('.btn-country');
-const countriesContainer = document.querySelector('.countries');
+const countryContainer = document.querySelector('.container__country');
+const neighboursContainer = document.querySelector('.neighbours__countries');
+const neighboursContainerBig = document.querySelector('.container__neighbours');
+const containerInputs = document.querySelector('.container__inputs');
 
 /////////////////// Functions
 function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-function renderCountry(data, className = '') {
+function renderCountry(data, container, className = '') {
   const html = `
   <article class="country ${className}">
     <img class="country__img" src="${data.flags.svg}" />
@@ -27,8 +30,14 @@ function renderCountry(data, className = '') {
     </div>
   </article>`;
 
-  countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
+  if (container === countryContainer)
+    neighboursContainerBig.insertAdjacentHTML(
+      'afterbegin',
+      `<h1 class="neighbours__title">The Neighbours of ${data.name}</h1>`
+    );
+
+  container.insertAdjacentHTML('beforeend', html);
+  container.style.opacity = 1;
 }
 
 function getPosition() {
@@ -37,9 +46,13 @@ function getPosition() {
   });
 }
 
-function renderError(msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-  countriesContainer.style.opacity = 1;
+function renderError(msg, container) {
+  // container.insertAdjacentText('beforeend', msg);
+  container.insertAdjacentHTML(
+    'afterbegin',
+    `<h1 class="neighbours__title">${msg}</h1>`
+  );
+  container.style.opacity = 1;
 }
 
 // getNeighbours then() method
@@ -62,7 +75,7 @@ async function getNeighbours(urlNeighbour) {
   if (!fetchData.ok) throw new Error('Problem getting neighbour data');
   const neighbourData = await fetchData.json();
   // console.log(neighbourData);
-  renderCountry(neighbourData, 'neighbour');
+  renderCountry(neighbourData, neighboursContainer, 'neighbour');
   return neighbourData;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,7 +151,7 @@ async function whereAmI() {
     if (!currLocation.ok) throw new Error('Problem getting country data');
     const [currLocationData] = await currLocation.json();
     // console.log(currLocationData);
-    renderCountry(currLocationData);
+    renderCountry(currLocationData, countryContainer);
     const neighbours = await Promise.all(
       currLocationData.borders.map(neighbour =>
         getNeighbours(`https://restcountries.com/v2/alpha/${neighbour}`)
@@ -147,13 +160,21 @@ async function whereAmI() {
     // console.log(neighbours);
     return neighbours;
   } catch (err) {
+    containerInputs.style.display = 'none';
+    renderError(err.message, countryContainer);
     console.error(err.message);
   }
 }
 
 btn.addEventListener('click', function () {
-  countriesContainer.innerHTML = '';
+  if (document.querySelector('.country'))
+    countryContainer.lastChild.style.display = 'none';
+  if (neighboursContainer) neighboursContainer.innerHTML = '';
+  if (document.querySelector('.neighbours__title'))
+    document.querySelector('.neighbours__title').style.display = 'none';
+  containerInputs.style.flexDirection = 'row';
+  containerInputs.style.height = '100%';
   whereAmI();
+  neighboursContainerBig.classList.remove('hidden');
 });
-
 // whereAmI().then(data => console.log(data));
