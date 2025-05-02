@@ -13,10 +13,18 @@
       <div class="container__country">
         <div class="container__inputs">
           <button class="btn-country">Where am I?</button>
-          <div class="search">
-            <input type="text" class="search__country" />
-            <button class="btn-country search__btn">S</button>
-          </div>
+          <form action="#" class="search">
+            <input
+              type="text"
+              class="search__country"
+              placeholder="Search for a country"
+            />
+            <button class="search__btn">
+              <svg class="search__icon">
+                <use xlink:href="sprite.svg#icon-magnifying-glass"></use>
+              </svg>
+            </button>
+          </form>
         </div>
         <!-- <article class="country country__main">
           <img class="country__img" src="" />
@@ -84,7 +92,6 @@
           </article> -->
         </div>
       </div>
-      <div class="images"></div>
     </main>
   </body>
 </html>

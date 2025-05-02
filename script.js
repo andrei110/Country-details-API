@@ -47,7 +47,6 @@ function getPosition() {
 }
 
 function renderError(msg, container) {
-  // container.insertAdjacentText('beforeend', msg);
   container.insertAdjacentHTML(
     'afterbegin',
     `<h1 class="neighbours__title">${msg}</h1>`
