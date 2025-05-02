@@ -114,12 +114,13 @@ body {
 .btn-country {
   border: none;
   font-size: 2rem;
-  padding: 2rem 5rem;
-  border-radius: 0.7rem;
+  padding: 2rem 1rem;
+  border-radius: 2rem;
   color: white;
   background-color: orangered;
   cursor: pointer;
   transition: all 0.5s;
+  width: 100%;
 }
 
 .images {
@@ -168,11 +169,46 @@ body {
 
 .search {
   display: flex;
+  flex: 0 0 25%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.search__input {
+  font-size: inherit;
+  font-size: 2rem;
+  color: orangered;
+  background-color: rgb(255, 234, 227);
+  border: none;
+  border-radius: 2rem;
+  padding: 2rem 3rem;
+  width: 100%;
+}
+.search__input:focus {
+  width: 100%;
+  background-color: rgb(255, 227, 218);
+  outline: none;
+}
+.search__input::placeholder {
+  color: rgb(255, 116, 65);
+}
+
+.search__input:focus + .search__btn {
+  color: rgb(255, 68, 0);
+  background-color: rgb(255, 227, 218);
+}
+.search__btn {
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 43%;
+  right: 1.5rem;
 }
 
 .search__icon {
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   fill: orangered;
 }
 

@@ -173,6 +173,8 @@ btn.addEventListener('click', function () {
     document.querySelector('.neighbours__title').style.display = 'none';
   containerInputs.style.flexDirection = 'row';
   containerInputs.style.height = '100%';
+  btn.style.width = '25%';
+  document.querySelector('.search__btn').style.top = '2rem';
   whereAmI();
   neighboursContainerBig.classList.remove('hidden');
 });
