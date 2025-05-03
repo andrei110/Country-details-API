@@ -182,11 +182,11 @@ btn.addEventListener('click', function () {
   if (neighboursContainer) neighboursContainer.innerHTML = '';
   if (document.querySelector('.neighbours__title'))
     document.querySelector('.neighbours__title').style.display = 'none';
-  if (query1000Up.matches) moveBtns('row', '100%', '30rem');
-  if (query1000Down.matches) {
-    moveBtns('collumn', '40vh', 'inherit');
-    document.querySelector('.search__btn').style.top = '3rem';
+  if (query1000Up.matches) {
+    moveBtns('row', '100%', '30rem');
+    document.querySelector('.search').style.width = '30rem';
   }
+  if (query1000Down.matches) moveBtns('collumn', '40vh', 'inherit');
   whereAmI();
   neighboursContainerBig.classList.remove('hidden');
 });
