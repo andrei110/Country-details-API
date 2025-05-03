@@ -7,6 +7,10 @@ const neighboursContainer = document.querySelector('.neighbours__countries');
 const neighboursContainerBig = document.querySelector('.container__neighbours');
 const containerInputs = document.querySelector('.container__inputs');
 
+// Media Querries
+const query1000Up = window.matchMedia('(min-width: 1000px)');
+const query1000Down = window.matchMedia('(max-width: 1000px)');
+
 /////////////////// Functions
 function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -23,8 +27,8 @@ function renderCountry(data, container, className = '') {
         data.population
       )}</p>
       <p class="country__row"><span>🗣️</span>${
-        data.languages[0].nativeName[0].toUpperCase() +
-        data.languages[0].nativeName.slice(1)
+        data.languages[0].name[0].toUpperCase() +
+        data.languages[0].name.slice(1)
       }</p>
       <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
     </div>
@@ -165,16 +169,24 @@ async function whereAmI() {
   }
 }
 
+function moveBtns(direction, height, width) {
+  containerInputs.style.flexDirection = direction;
+  containerInputs.style.height = height;
+  document.querySelector('.search__btn').style.top = '2rem';
+  document.querySelector('.search__input').style.width = width;
+}
+
 btn.addEventListener('click', function () {
   if (document.querySelector('.country'))
     countryContainer.lastChild.style.display = 'none';
   if (neighboursContainer) neighboursContainer.innerHTML = '';
   if (document.querySelector('.neighbours__title'))
     document.querySelector('.neighbours__title').style.display = 'none';
-  containerInputs.style.flexDirection = 'row';
-  containerInputs.style.height = '100%';
-  btn.style.width = '25%';
-  document.querySelector('.search__btn').style.top = '2rem';
+  if (query1000Up.matches) moveBtns('row', '100%', '30rem');
+  if (query1000Down.matches) {
+    moveBtns('collumn', '40vh', 'inherit');
+    document.querySelector('.search__btn').style.top = '3rem';
+  }
   whereAmI();
   neighboursContainerBig.classList.remove('hidden');
 });

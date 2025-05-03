@@ -25,6 +25,7 @@ body {
   display: flex;
   flex-flow: column;
   align-items: center;
+  width: 100%;
 }
 .neighbours {
   /* margin-top: 10vh; */
@@ -73,7 +74,7 @@ body {
 
 .neighbour {
   transform: scale(0.8) translateY(1rem);
-  margin-left: 0;
+  /* margin-left: 0; */
 }
 
 .country__img {
@@ -120,7 +121,12 @@ body {
   background-color: orangered;
   cursor: pointer;
   transition: all 0.5s;
-  width: 100%;
+  width: 30rem;
+}
+@media (max-width: 450px) {
+  .btn-country {
+    width: 25rem;
+  }
 }
 
 .images {
@@ -173,6 +179,13 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
+  width: 40rem;
+}
+
+@media (max-width: 450px) {
+  .search {
+    width: 28rem;
+  }
 }
 
 .search__input {
