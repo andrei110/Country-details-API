@@ -2,6 +2,8 @@
 
 /////////////////// Variables
 const btn = document.querySelector('.btn-country');
+const btnSearch = document.querySelector('.search__btn');
+const inputSearch = document.querySelector('.search__input');
 const countryContainer = document.querySelector('.container__country');
 const neighboursContainer = document.querySelector('.neighbours__countries');
 const neighboursContainerBig = document.querySelector('.container__neighbours');
@@ -81,6 +83,39 @@ async function getNeighbours(urlNeighbour) {
   renderCountry(neighbourData, neighboursContainer, 'neighbour');
   return neighbourData;
 }
+
+async function renderNeighbours(countryNeighbours) {
+  const neighbours = await Promise.all(
+    countryNeighbours.map(neighbour =>
+      getNeighbours(`https://restcountries.com/v2/alpha/${neighbour}`)
+    )
+  );
+  inputSearch.value = '';
+  // console.log(neighbours);
+  return neighbours;
+}
+
+function moveBtns(direction, height, width) {
+  containerInputs.style.flexDirection = direction;
+  containerInputs.style.height = height;
+  document.querySelector('.search__btn').style.top = '2rem';
+  document.querySelector('.search__input').style.width = width;
+}
+
+function resetUI() {
+  if (document.querySelector('.country'))
+    countryContainer.lastChild.style.display = 'none';
+  if (neighboursContainer) neighboursContainer.innerHTML = '';
+  if (document.querySelector('.neighbours__title'))
+    document.querySelector('.neighbours__title').style.display = 'none';
+  if (query1000Up.matches) {
+    moveBtns('row', '100%', '30rem');
+    document.querySelector('.search').style.width = '30rem';
+  }
+  if (query1000Down.matches) moveBtns('collumn', '40vh', 'inherit');
+  neighboursContainerBig.classList.remove('hidden');
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // whereAmI using then() method
@@ -155,13 +190,7 @@ async function whereAmI() {
     const [currLocationData] = await currLocation.json();
     // console.log(currLocationData);
     renderCountry(currLocationData, countryContainer);
-    const neighbours = await Promise.all(
-      currLocationData.borders.map(neighbour =>
-        getNeighbours(`https://restcountries.com/v2/alpha/${neighbour}`)
-      )
-    );
-    // console.log(neighbours);
-    return neighbours;
+    renderNeighbours(currLocationData.borders);
   } catch (err) {
     containerInputs.style.display = 'none';
     renderError(err.message, countryContainer);
@@ -169,25 +198,32 @@ async function whereAmI() {
   }
 }
 
-function moveBtns(direction, height, width) {
-  containerInputs.style.flexDirection = direction;
-  containerInputs.style.height = height;
-  document.querySelector('.search__btn').style.top = '2rem';
-  document.querySelector('.search__input').style.width = width;
+async function searchCountry(countryName) {
+  try {
+    const country = await fetch(
+      `https://restcountries.com/v2/name/${countryName}`
+    );
+    if (!country.ok) throw new Error('Problem getting country data');
+    const [countryData] = await country.json();
+    if (countryData.name !== inputSearch.value)
+      throw new Error(`${inputSearch.value} is not a country !`);
+    renderCountry(countryData, countryContainer);
+    renderNeighbours(countryData.borders);
+  } catch (err) {
+    containerInputs.style.display = 'none';
+    renderError(err.message, countryContainer);
+    console.error(err.message);
+  }
 }
 
 btn.addEventListener('click', function () {
-  if (document.querySelector('.country'))
-    countryContainer.lastChild.style.display = 'none';
-  if (neighboursContainer) neighboursContainer.innerHTML = '';
-  if (document.querySelector('.neighbours__title'))
-    document.querySelector('.neighbours__title').style.display = 'none';
-  if (query1000Up.matches) {
-    moveBtns('row', '100%', '30rem');
-    document.querySelector('.search').style.width = '30rem';
-  }
-  if (query1000Down.matches) moveBtns('collumn', '40vh', 'inherit');
   whereAmI();
-  neighboursContainerBig.classList.remove('hidden');
+  resetUI();
 });
 // whereAmI().then(data => console.log(data));
+
+btnSearch.addEventListener('click', function (e) {
+  e.preventDefault();
+  searchCountry(inputSearch.value);
+  resetUI();
+});
