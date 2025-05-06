@@ -1,6 +1,6 @@
 'use strict';
 
-/////////////////// Variables
+//------------ Variables
 const btn = document.querySelector('.btn-country');
 const btnSearch = document.querySelector('.search__btn');
 const inputSearch = document.querySelector('.search__input');
@@ -13,7 +13,7 @@ const containerInputs = document.querySelector('.container__inputs');
 const query1000Up = window.matchMedia('(min-width: 1000px)');
 const query1000Down = window.matchMedia('(max-width: 1000px)');
 
-/////////////////// Functions
+//------------ Functions
 function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
@@ -118,7 +118,7 @@ function resetUI() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// whereAmI using then() method
+//------------ whereAmI using then() method
 /*
 function whereAmI(lat, lng) {
   fetch(
@@ -166,7 +166,7 @@ navigator.geolocation.getCurrentPosition(
 );
 */
 
-// whereAmI using async/await
+//------------ whereAmI using async/await
 async function whereAmI() {
   try {
     // Geolocation
@@ -198,6 +198,7 @@ async function whereAmI() {
   }
 }
 
+//------------ Search Country
 async function searchCountry(countryName) {
   try {
     const country = await fetch(
@@ -216,6 +217,7 @@ async function searchCountry(countryName) {
   }
 }
 
+//------------ Event Listeners
 btn.addEventListener('click', function () {
   whereAmI();
   resetUI();

@@ -217,6 +217,7 @@ body {
   position: absolute;
   top: 2rem;
   right: 1.5rem;
+  background-color: rgb(255, 234, 227);
 }
 
 .search__icon {
