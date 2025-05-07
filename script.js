@@ -18,13 +18,19 @@ function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-function renderCountry(data, container, className = '') {
+function renderCountry(data, container, className = '', dataCity) {
   const html = `
   <article class="country ${className}">
     <img class="country__img" src="${data.flags.svg}" />
     <div class="country__data">
       <h3 class="country__name">${data.name}</h3>
+      ${
+        dataCity
+          ? `<p class="country__row country__row--city">${dataCity.city}`
+          : ''
+      }
       <h4 class="country__region">${data.region}</h4>
+      
       <p class="country__row"><span>👫</span>${formatNumber(
         data.population
       )}</p>
@@ -189,7 +195,7 @@ async function whereAmI() {
     if (!currLocation.ok) throw new Error('Problem getting country data');
     const [currLocationData] = await currLocation.json();
     // console.log(currLocationData);
-    renderCountry(currLocationData, countryContainer);
+    renderCountry(currLocationData, countryContainer, '', revGeoData);
     renderNeighbours(currLocationData.borders);
   } catch (err) {
     containerInputs.style.display = 'none';
