@@ -142,7 +142,8 @@ function renderMap(lat, lng) {
   map.on('load', () => {
     // Generate a polygon using turf.circle
     // See https://turfjs.org/docs/#circle
-    const radius = 0.6; // kilometer
+    let radius = 1.35; // kilometer
+    if (query800.matches) radius = 0.2;
     const options = {
       steps: 64,
       units: 'kilometers',

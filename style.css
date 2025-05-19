@@ -223,6 +223,7 @@ body {
   flex: 1;
   border-bottom-right-radius: 0.7rem;
   border-top-right-radius: 0.7rem;
+  box-shadow: 0 2rem 5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 800px) {
